@@ -1,0 +1,19 @@
+{
+  "clientVersion": "2.4.0",
+  "maxPackageBytes": 1800000000,
+  "exclude": [
+    "backup/*",
+    "Screenshot/*",
+    "aion.bat",
+    "system.cfg",
+    "sc_renew_local.dat",
+    "*.log",
+    "*.dmp",
+    ".git/*",
+    ".env",
+    ".env.*",
+    "*.pem",
+    "*.pfx",
+    "*.p12"
+  ]
+}
