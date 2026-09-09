@@ -24,8 +24,7 @@ $names = @{}
 $index = 0
 foreach ($package in $m.packages) {
     $index++
-    $expectedName = 'aioncl-client-{0}-{1:D3}.zip' -f $m.clientVersion, $index
-    if ($package.name -cne $expectedName -or $names.ContainsKey($package.name)) { throw 'Invalid or duplicate package name.' }
+    if ($package.name -notmatch '^aioncl-client-2\.4\.\d+(?:-[a-zA-Z0-9.-]+)?-\d{3}\.zip$' -or $names.ContainsKey($package.name)) { throw 'Invalid or duplicate package name.' }
     $names[$package.name] = $true
     foreach ($url in $package.mirrors) { Assert-PublicBaseUrl $url }
     if ($package.size -lt 0 -or $package.size -gt $m.maxPackageBytes -or $package.sha256 -notmatch '^[a-f0-9]{64}$') { throw 'Invalid package metadata.' }

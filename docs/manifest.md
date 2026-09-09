@@ -13,7 +13,7 @@
 | `sourceFileCount`, `sourceBytes` | Nombre et taille totale des fichiers sélectionnés après exclusions. |
 | `compressedBytes` | Somme des tailles des ZIP, hors manifest et SHA256SUMS. |
 | `packages` | Tableau ordonné, au moins une archive. |
-| `packages[].name` | `aioncl-client-2.4.0-001.zip`, index contigu à partir de 001. |
+| `packages[].name` | Nom unique au format `aioncl-client-2.4.N-001.zip`. Une mise à jour peut réutiliser un ZIP inchangé d’une version précédente ; le nom et l’URL restent alors ceux de cette version précédente. |
 | `packages[].size`, `sha256` | Taille et hash du ZIP téléchargé. |
 | `packages[].fileCount`, `uncompressedSize` | Nombre et taille totale des fichiers du ZIP. |
 | `packages[].mirrors` | Tableau d'URL HTTPS. Vide dans un build local sans `BaseUrl`. |
