@@ -1,0 +1,18 @@
+name: Client packaging tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  packaging:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run packaging tests
+        shell: pwsh
+        run: ./scripts/Test-Packaging.ps1
