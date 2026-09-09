@@ -11,12 +11,15 @@
 !/docs/
 /docs/*
 !/docs/manifest.md
+!/docs/shop-update.md
 !/scripts/
 /scripts/*
 !/scripts/Common.ps1
 !/scripts/Build-Packages.ps1
 !/scripts/Test-Packages.ps1
 !/scripts/Test-Packaging.ps1
+!/tools/
+!/tools/repack-shop-packages.py
 
 # Local builds, inventories, notes, prompts and credentials stay unversioned.
 /artifacts/
