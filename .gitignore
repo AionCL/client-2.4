@@ -12,6 +12,7 @@
 /docs/*
 !/docs/manifest.md
 !/docs/shop-update.md
+!/docs/release-2.4.3.md
 !/scripts/
 /scripts/*
 !/scripts/Common.ps1

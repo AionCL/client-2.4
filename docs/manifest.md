@@ -6,7 +6,7 @@
 | --- | --- |
 | `formatVersion` | Version du contrat : `1`. Refuser une version inconnue. |
 | `product`, `gameVersion` | `AionCL`, `2.4`. |
-| `clientVersion` | Version du lot, initialement `2.4.0`. |
+| `clientVersion` | Version du lot au format `2.4.N` (le lot propre courant est `2.4.3`). |
 | `buildId` | SHA-256 des entrées de construction : inventaire trié, version, limite, URL et convention de compression. Ce n'est pas une signature. |
 | `archiveFormat` | `zip`, archives indépendantes, DEFLATE. ZIP64 peut être utilisé. |
 | `maxPackageBytes` | Plafond inclusif par archive, strictement inférieur à 2 GiB. |
