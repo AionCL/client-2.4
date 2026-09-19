@@ -1,5 +1,5 @@
 {
-  "clientVersion": "2.4.3",
+  "clientVersion": "2.4.4",
   "maxPackageBytes": 1800000000,
   "exclude": [
     "backup/*",
