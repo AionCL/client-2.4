@@ -111,3 +111,21 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   Test must finish and restore before next run.
 - Next: after baseline completion and commit/push, use Invoke-InteractiveTest.ps1
   without -Baseline, with the x86 diagnostic path and a new RunDirectory.
+
+## Interactive baseline corrections
+
+- Baseline PID 30208 stayed alive at 85 seconds; user screenshots confirm login
+  screen and authentication failure. The initial test's -DEVMODE-only arguments
+  omitted AionCL's server settings. No server outage inferred from that failure.
+- Restoration harness failed to stop that process: comparison mixed UTC with a
+  locally parsed DateTime. Corrected parsing to DateTimeOffset.UtcDateTime and
+  persisted exact process ID. Completed state prevents a late watchdog action.
+- Baseline DLL was already original throughout. Subsequent inspection found no
+  Aion process running. No diagnostic installed during interactive baseline.
+- Harness now reads reviewed launcher.json/server-config.json copies beside it,
+  using the existing launcher argument template and configured IPv4 login host.
+- User screenshot contents are not copied into logs; no credentials collected.
+- DONE: corrected baseline with AionCL arguments (PID 10832) survived 85 seconds,
+  terminated automatically, original hash verified, Completed=true, scheduled
+  task result 0 and removed. Run: interactive-baseline32-2.
+- Updated camera README to explicitly mark historical Shugo payloads unvalidated.

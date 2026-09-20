@@ -52,7 +52,9 @@ It registers a temporary InteractiveToken scheduled task, never supplies a
 password, captures results, and removes the completed task. Baseline and diagnostic
 runs must use the same desktop/session and arguments for a meaningful comparison.
 
-No credentials are required: startup uses only `-DEVMODE`. A surviving process
+Place reviewed launcher.json and server-config.json copies beside the test script.
+No credentials are required: startup uses the launcher's configured arguments and
+resolves the configured login host to IPv4. A surviving process
 under SSH proves neither an interactive login nor an in-game camera effect.
 
 API lifecycle reference: https://learn.microsoft.com/en-us/windows/win32/dlls/dllmain
