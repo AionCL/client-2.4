@@ -43,3 +43,10 @@
 *.pfx
 *.p12
 __pycache__/
+
+# Reviewed camera patch payload
+!/patches/
+!/patches/camera/
+!/patches/camera/bin64/
+!/patches/camera/bin64/version.dll
+!/patches/camera/README.md
