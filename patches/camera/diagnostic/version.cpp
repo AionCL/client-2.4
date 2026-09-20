@@ -99,11 +99,21 @@ void MatchStrings(uintptr_t address, size_t bytes, size_t step, const MEMORY_BAS
         if (buffer[i] != 'g') continue;
         for (unsigned n = 0; n < 2; ++n) {
             size_t length = strlen(Names[n]) + 1;
-            if (length > bytes - i || memcmp(buffer + i, Names[n], length)) continue;
+            if (length > bytes - i) continue;
+            bool match = true;
+            for (size_t c = 0; c < length; ++c) {
+                unsigned char actual = buffer[i + c];
+                unsigned char wanted = static_cast<unsigned char>(Names[n][c]);
+                if (actual >= 'A' && actual <= 'Z') actual += 'a' - 'A';
+                if (wanted >= 'A' && wanted <= 'Z') wanted += 'a' - 'A';
+                if (actual != wanted) { match = false; break; }
+            }
+            if (!match) continue;
             if (hitCount == MaxHits) return;
             hits[hitCount++] = {address + i, n};
-            Log("string name=%s address=%p allocation=%p type=%lx protect=%lx\n",
-                Names[n], reinterpret_cast<void*>(address + i), m.AllocationBase, m.Type, m.Protect);
+            Log("string name=%s address=%p allocation=%p type=%lx protect=%lx exact_case=%u\n",
+                Names[n], reinterpret_cast<void*>(address + i), m.AllocationBase, m.Type, m.Protect,
+                memcmp(buffer + i, Names[n], length) == 0 ? 1u : 0u);
             Inspect(hits[hitCount - 1]);
         }
     }
@@ -180,9 +190,9 @@ DWORD WINAPI Worker(void*) {
     MEMORY_BASIC_INFORMATION stack{};
     VirtualQuery(&stack, &stack, sizeof(stack));
     stackAllocation = stack.AllocationBase;
-    Log("diagnostic=1 bits=%zu pid=%lu block=%zu read_only=1\n", sizeof(void*) * 8, GetCurrentProcessId(), Block);
-    const DWORD waits[] = {2000, 6000, 12000};
-    for (unsigned pass = 0; pass < 3; ++pass) {
+    Log("diagnostic=2 bits=%zu pid=%lu block=%zu read_only=1\n", sizeof(void*) * 8, GetCurrentProcessId(), Block);
+    const DWORD waits[] = {2000, 6000, 12000, 40000};
+    for (unsigned pass = 0; pass < 4; ++pass) {
         Sleep(waits[pass]);
         Log("pass=%u\n", pass);
         hitCount = 0;

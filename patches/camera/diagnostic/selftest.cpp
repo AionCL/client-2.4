@@ -11,6 +11,7 @@ int main(int argc, char** argv) {
     if (!region) return 2;
     memcpy(region + 65532, "g_minFov", 9); // Spans a scanner block boundary.
     memcpy(region + 131072 - 9, "g_camMax", 9); // Ends immediately before a guard page.
+    memcpy(region + 128, "g_minfov", 9);
     DWORD old;
     if (!VirtualProtect(region + 131072, 65536, PAGE_READWRITE | PAGE_GUARD, &old)) return 3;
     printf("fixture fov=%p cam=%p\n", region + 65532, region + 131072 - 9);
@@ -22,7 +23,7 @@ int main(int argc, char** argv) {
     memcpy(&language, &exported, sizeof(language));
     wchar_t name[100];
     if (!language || !language(0x409, name, 100)) return 5;
-    Sleep(30000);
+    Sleep(75000);
     MEMORY_BASIC_INFORMATION info{};
     VirtualQuery(region + 131072, &info, sizeof(info));
     bool ok = (info.Protect & PAGE_GUARD) && !memcmp(region + 65532, "g_minFov", 9) &&

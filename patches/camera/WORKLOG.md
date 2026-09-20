@@ -129,3 +129,35 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   terminated automatically, original hash verified, Completed=true, scheduled
   task result 0 and removed. Run: interactive-baseline32-2.
 - Updated camera README to explicitly mark historical Shugo payloads unvalidated.
+
+## First successful in-client x86 scan
+
+- DONE: commit 4bf08e4 pushed; interactive-scan32-1 (PID 29884) completed all
+  three passes, client alive, zero read errors/timeouts, scheduled task result 0,
+  original restored and verified automatically.
+- Found only g_camMax at 6d9e564c, MEM_IMAGE allocation 6d9a0000, referenced at
+  6d9b9a84. This is NOT an identified CVar. No g_minFov hit.
+- Readable memory grew from 66 MB to 223 MB to 971 MB, indicating delayed loading.
+- Diagnostic revision 2 adds a fourth pass after at least 60 seconds and matches
+  ASCII case variants while recording exact_case. Test timeout raised to 130s,
+  watchdog to 165s. Fixture adds lowercase spelling and waits for the late pass.
+- Local reference binaries exist under /opt/codex-data/reference/aioncl-tmp;
+  their identity versus the Windows binaries has NOT been verified.
+
+## Revision 2 validation and static evidence
+
+- DONE: reference Game.dll and CrySystem.dll SHA256 match Windows in both
+  architectures. Game32 f8b5be13fcebc23d276ab4b37212101a336ce819b3c1fca68502f4821298ab4f;
+  Game64 f259b60f74768c226eafff085551700bcaf3aa43a20ede7fe3925e0e31daaf0f.
+- DONE: revision 2 builds PE32 and PE32+ with -Wall -Wextra -Werror. SHA256:
+  x86 85794a1ebba5cf43b7cec67aa87fc960ff31089ecdb02dc15d579385727f2118;
+  x64 acd542bb364b38a490d968311f5a44e1a18ba01e1a9cfde1b1756b4d125c4f90.
+- DONE: fixtures PID 24372 (x86) and 24752 (x64) exit 0, complete four passes,
+  detect lowercase target with exact_case=0, preserve guard and fixture bytes.
+  Full logs retrieved to VM evidence directory; no read errors/timeouts.
+- Static x64 Game.dll: image base 180000000; g_camMax RVA 8eb250, registration
+  call RVA 21231 (vtable +18), result stored [rdi+6ee0], default string 10.00.
+  g_minFov RVA 8ee050, call RVA 225ad, result [rdi+7220], default string 60.
+  These are static clues, NOT runtime CVar structure validation.
+- Next: commit/push revision 2, interactive x86 run with late pass, restore, then
+  separate x64 run. Runtime patch is still gated on CVar identity validation.

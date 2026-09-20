@@ -46,7 +46,7 @@ function Restore-Test {
 }
 
 if ($RestoreOnly) {
-    Start-Sleep -Seconds 110
+    Start-Sleep -Seconds 165
     Restore-Test
     exit
 }
@@ -90,7 +90,7 @@ try {
     $testState | ConvertTo-Json | Set-Content -LiteralPath $State
     "STARTED architecture=$Architecture pid=$($process.Id) baseline=$Baseline"
     $log = Join-Path $bin "aioncl-camera-$($process.Id).log"
-    $end = [datetime]::UtcNow.AddSeconds(85)
+    $end = [datetime]::UtcNow.AddSeconds(130)
     do {
         Start-Sleep -Seconds 2
         $process.Refresh()

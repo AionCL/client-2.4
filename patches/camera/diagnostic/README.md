@@ -20,7 +20,9 @@ Shugo initialization, or game-memory writes. MinGW startup code may import
 VirtualProtect for its own relocations; the scanner does not call it.
 
 A worker starts after DllMain returns, pins the diagnostic module, and records
-three bounded scans. Only VirtualQuery and ReadProcessMemory access inspected
+four bounded scans (including a late pass after at least 60 seconds). Target names
+are matched ignoring ASCII case, with exact_case reported separately.
+Only VirtualQuery and ReadProcessMemory access inspected
 memory. Guard/uncommitted/no-access pages, the scanner image and its worker stack
 are excluded. Read failures are counted; the first 16 per pass are logged.
 Blocks are 64 KiB with overlap, scans have 8-second deadlines, and hit/reference
