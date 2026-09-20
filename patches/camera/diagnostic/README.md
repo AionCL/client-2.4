@@ -45,6 +45,13 @@ a new state JSON path. Logs remain beside the client DLL for collection. The
 watchdog is a separate process; machine shutdown or termination of both test and
 watchdog still requires running restoration from the saved state before reuse.
 
+`-Baseline` runs the original client without installing a diagnostic. Restoration
+retries transient file sharing violations for up to 30 seconds. To test on the
+active desktop from SSH, use `Invoke-InteractiveTest.ps1` with a new RunDirectory.
+It registers a temporary InteractiveToken scheduled task, never supplies a
+password, captures results, and removes the completed task. Baseline and diagnostic
+runs must use the same desktop/session and arguments for a meaningful comparison.
+
 No credentials are required: startup uses only `-DEVMODE`. A surviving process
 under SSH proves neither an interactive login nor an in-game camera effect.
 

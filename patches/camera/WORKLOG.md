@@ -79,3 +79,35 @@ Review and commit/push diagnostic source, then run Test-Startup.ps1 on Windows:
 Retrieve the process-specific log and verify original restoration hashes. The
 script includes finally restoration plus a 110-second independent watchdog.
 Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint.
+
+## First client startup attempt
+
+- DONE: source committed/pushed as 13fbfbe before client test.
+- FAILED validation: bin32 PID 25488 exited 0 after the first scan (66 MB read,
+  zero hits/errors). Log `bin32/aioncl-camera-25488.log` is incomplete. No CVar
+  identification possible from this attempt.
+- FAILED then resolved: finally restoration initially hit a sharing violation
+  after process exit. Retried remotely after lock cleared; original restored and
+  relay removed. Verified original SHA256:
+  `5bb611eff3f92d830a2fd7a3b0916ba05cbffacccd570e9020432adb5be7605f`.
+- Added bounded retries to restoration and an original-DLL baseline test mode.
+- Windows has an active aymen console session 1; SSH uses codex outside this
+  desktop. Need distinguish noninteractive startup failure from diagnostic issues.
+- DONE: x64 diagnostic and fixture also compile with warnings as errors; PE32+
+  verified. x64 execution not yet tested.
+
+## Session isolation and x64 fixture
+
+- DONE: original x86 DLL baseline under SSH also exits 0 (PID 22916). Restoration
+  with retries succeeded. Thus early SSH termination is not diagnostic-specific.
+- DONE: x64 isolated fixture exits 0, detects 000001b11d82fffc and
+  000001b11d83fff7 in all passes, guard intact, data unchanged, no read errors or
+  timeouts, complete=1. Windows log: camera-diagnostic64-20260920/aioncl-camera-1696.log.
+- DONE: retrieved fixture and first startup logs to
+  `/tmp/aioncl-camera-evidence-20260920/` on VM.
+- IN PROGRESS: original x86 baseline on active desktop via temporary scheduled
+  task (Invoke-InteractiveTest.ps1). PID 30208 verified running in session 1.
+  Results directory: `D:/codex-work/camera-diagnostic-20260920/interactive-baseline32-1`.
+  Test must finish and restore before next run.
+- Next: after baseline completion and commit/push, use Invoke-InteractiveTest.ps1
+  without -Baseline, with the x86 diagnostic path and a new RunDirectory.
