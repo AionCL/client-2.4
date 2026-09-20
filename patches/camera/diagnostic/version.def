@@ -1,0 +1,18 @@
+LIBRARY "version.dll"
+EXPORTS
+GetFileVersionInfoA=aioncl_original.GetFileVersionInfoA @1
+GetFileVersionInfoExA=aioncl_original.GetFileVersionInfoExA @2
+GetFileVersionInfoExW=aioncl_original.GetFileVersionInfoExW @3
+GetFileVersionInfoSizeA=aioncl_original.GetFileVersionInfoSizeA @4
+GetFileVersionInfoSizeExA=aioncl_original.GetFileVersionInfoSizeExA @5
+GetFileVersionInfoSizeExW=aioncl_original.GetFileVersionInfoSizeExW @6
+GetFileVersionInfoSizeW=aioncl_original.GetFileVersionInfoSizeW @7
+GetFileVersionInfoW=aioncl_original.GetFileVersionInfoW @8
+VerFindFileA=aioncl_original.VerFindFileA @9
+VerFindFileW=aioncl_original.VerFindFileW @10
+VerInstallFileA=aioncl_original.VerInstallFileA @11
+VerInstallFileW=aioncl_original.VerInstallFileW @12
+VerLanguageNameA=aioncl_original.VerLanguageNameA @13
+VerLanguageNameW=aioncl_original.VerLanguageNameW @14
+VerQueryValueA=aioncl_original.VerQueryValueA @15
+VerQueryValueW=aioncl_original.VerQueryValueW @16
