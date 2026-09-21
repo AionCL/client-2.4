@@ -212,3 +212,22 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
 - DONE: enabled x86 patch fixture exits 0, fixture unchanged, guard intact,
   patch_skipped reason=unvalidated_layout, complete=1. No prototype has yet been
   applied inside Aion at this checkpoint.
+
+## Automated patch results and manual test preparation
+
+- DONE: prototype source committed/pushed as 6deb5df before Aion writes.
+- DONE: x86 PID 28428, task result 0: FOV 73 -> 80, distance 12 -> 30, both stable
+  for ten seconds, then original 73/12 bytes restored. patch_test applied=1
+  restored=1. Original DLL and system.cfg restored; state Completed=true.
+- DONE: x64 PID 27484, same successful ten-second application/readback/rollback,
+  task result 0, original DLL and system.cfg restored. Both logs on VM.
+- No in-game visual test performed yet. These results prove the narrow storage
+  operation, not camera behavior during character play or production stability.
+- Added opt-in AIONCL_CAMERA_MANUAL=1 flow: waits up to 30 minutes for a PID-scoped
+  .apply signal, rescans after login, applies, waits for .restore or 30 minutes.
+  Test harness -ManualCamera -StartOnly detaches a temporary scheduled task,
+  records its identity, and removes it when the session ends. Watchdog covers the
+  longer session; exact PID, DLL and system.cfg restoration checks remain active.
+- DONE: updated code compiles x86/x64; value tests pass; updated Windows scripts
+  parse correctly. Next gate: automated signal/apply/restore run of manual mode
+  before opening the actual user recipe session.

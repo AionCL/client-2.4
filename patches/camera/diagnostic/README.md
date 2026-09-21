@@ -89,3 +89,19 @@ ASAN_OPTIONS=detect_leaks=0 /tmp/camera-values-test
 
 Leak detection is disabled under the VM sandbox's ptrace environment; ASan/UBSan
 memory and undefined-behavior checks remain enabled.
+
+## In-game recipe
+
+`Invoke-InteractiveTest.ps1 -ManualCamera -StartOnly` starts a detached interactive
+test, saving task identity to RunDirectory/task.json. The worker waits up to 30
+minutes for `bin64/aioncl-camera-PID.apply` (or bin32). Create this empty signal
+only once the user is in game. The scanner discovers and validates the CVars again
+before applying 80/30. It then holds for up to 30 minutes, with continuous readback.
+Creating `aioncl-camera-PID.restore` requests immediate rollback and ends the test.
+Signals are consumed automatically. Normal game exit also lets the controller
+restore the original DLL and system.cfg; the temporary scheduled task removes
+itself. No login credentials are supplied, inspected, or saved by these tools.
+
+`manual_ready` means no camera change has been made yet; `manual_applied` confirms
+the requested values were written and read back. Visual validation is still the
+user's responsibility. All statements of stability must distinguish these stages.

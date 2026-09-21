@@ -4,6 +4,8 @@ param(
     [string]$Diagnostic,
     [switch]$Baseline,
     [switch]$CameraPatch,
+    [switch]$ManualCamera,
+    [ValidateRange(165,3900)][int]$RestoreDelaySeconds = 165,
     [switch]$RestoreOnly,
     [string]$State
 )
@@ -52,10 +54,11 @@ function Restore-Test {
 }
 
 if ($RestoreOnly) {
-    Start-Sleep -Seconds 165
+    Start-Sleep -Seconds $RestoreDelaySeconds
     Restore-Test
     exit
 }
+if ($ManualCamera) { $CameraPatch = $true }
 if ((!$Diagnostic -and !$Baseline) -or !$State) { throw 'Diagnostic (or Baseline) and State paths are required' }
 if (Test-Path -LiteralPath $State) { throw 'Use a new state path for each experiment' }
 if (!(Test-Path -LiteralPath $original)) { throw 'Missing known original DLL' }
@@ -86,7 +89,8 @@ if ($CameraPatch) {
     $testState.ConfigHash = (Get-FileHash -LiteralPath $cfg).Hash
 }
 $testState | ConvertTo-Json | Set-Content -LiteralPath $State
-$watchArgs = '-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "{0}" -RestoreOnly -Architecture {1} -Client "{2}" -State "{3}"' -f $PSCommandPath,$Architecture,$Client,$State
+$restoreDelay = if ($ManualCamera) { 3750 } else { 165 }
+$watchArgs = '-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "{0}" -RestoreOnly -Architecture {1} -Client "{2}" -State "{3}" -RestoreDelaySeconds {4}' -f $PSCommandPath,$Architecture,$Client,$State,$restoreDelay
 $watchdog = Start-Process powershell.exe -ArgumentList $watchArgs -WindowStyle Hidden -PassThru
 try {
     if (!$Baseline) {
@@ -99,13 +103,16 @@ try {
     $launch.Arguments = $arguments
     $launch.UseShellExecute = $false
     $launch.EnvironmentVariables.Remove('AIONCL_CAMERA_TEST')
+    $launch.EnvironmentVariables.Remove('AIONCL_CAMERA_MANUAL')
     if ($CameraPatch) { $launch.EnvironmentVariables['AIONCL_CAMERA_TEST'] = '1' }
+    if ($ManualCamera) { $launch.EnvironmentVariables['AIONCL_CAMERA_MANUAL'] = '1' }
     $process = [Diagnostics.Process]::Start($launch)
     $testState.ProcessId = $process.Id
     $testState | ConvertTo-Json | Set-Content -LiteralPath $State
     "STARTED architecture=$Architecture pid=$($process.Id) baseline=$Baseline"
     $log = Join-Path $bin "aioncl-camera-$($process.Id).log"
-    $end = [datetime]::UtcNow.AddSeconds(130)
+    $testSeconds = if ($ManualCamera) { 3700 } else { 130 }
+    $end = [datetime]::UtcNow.AddSeconds($testSeconds)
     do {
         Start-Sleep -Seconds 2
         $process.Refresh()
@@ -114,7 +121,7 @@ try {
     } while ([datetime]::UtcNow -lt $end)
     "ALIVE=$(!$process.HasExited) LOG=$log"
     if (Test-Path $log) { Get-Content -LiteralPath $log }
-    if ($CameraPatch -and (!(Test-Path $log) -or
+    if ($CameraPatch -and !$ManualCamera -and (!(Test-Path $log) -or
         !(Select-String -LiteralPath $log -Pattern '^patch_test applied=1 restored=1$' -Quiet))) {
         throw 'Camera apply/rollback validation failed; inspect diagnostic log'
     }

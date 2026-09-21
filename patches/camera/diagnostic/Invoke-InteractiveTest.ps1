@@ -3,6 +3,8 @@ param(
     [string]$Diagnostic,
     [switch]$Baseline,
     [switch]$CameraPatch,
+    [switch]$ManualCamera,
+    [switch]$StartOnly,
     [Parameter(Mandatory=$true)][string]$RunDirectory
 )
 $ErrorActionPreference = 'Stop'
@@ -19,14 +21,23 @@ foreach ($path in @($script,$output,$state,$Diagnostic)) {
 }
 $mode = if ($Baseline) { '-Baseline' } else { "-Diagnostic '$Diagnostic'" }
 if ($CameraPatch) { $mode += ' -CameraPatch' }
+if ($ManualCamera) { $mode += ' -ManualCamera' }
 $command = "try { & '$script' -Architecture $Architecture $mode -State '$state' *> '$output'; exit 0 } catch { `$_.Exception.Message | Out-File -Append '$output'; exit 1 }"
+if ($StartOnly) { $command += " finally { Unregister-ScheduledTask -TaskName '$taskName' -Confirm:`$false -ErrorAction SilentlyContinue }" }
 $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($command))
 $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -EncodedCommand $encoded"
 $principal = New-ScheduledTaskPrincipal -UserId $user -LogonType Interactive -RunLevel Highest
-$settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit (New-TimeSpan -Minutes 4) -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+$taskMinutes = if ($ManualCamera) { 65 } else { 4 }
+$settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit (New-TimeSpan -Minutes $taskMinutes) -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
 try {
     Register-ScheduledTask -TaskName $taskName -Action $action -Principal $principal -Settings $settings | Out-Null
     Start-ScheduledTask -TaskName $taskName
+    if ($StartOnly) {
+        @{ TaskName = $taskName; RunDirectory = $RunDirectory; Architecture = $Architecture } |
+            ConvertTo-Json | Set-Content (Join-Path $RunDirectory 'task.json')
+        "TASK_LAUNCHED name=$taskName result=$output"
+        return
+    }
     $deadline = [datetime]::UtcNow.AddMinutes(3)
     do {
         Start-Sleep -Seconds 3
@@ -39,7 +50,7 @@ try {
     if ($task.State -eq 'Running') { throw 'Test still running; watchdog restoration remains armed' }
     if ($info.LastTaskResult -ne 0) { throw 'Interactive test failed; inspect result and restoration' }
 } finally {
-    if ((Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue).State -ne 'Running') {
+    if (!$StartOnly -and (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue).State -ne 'Running') {
         Unregister-ScheduledTask -TaskName $taskName -Confirm:$false -ErrorAction SilentlyContinue
     }
 }

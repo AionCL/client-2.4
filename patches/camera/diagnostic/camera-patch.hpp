@@ -66,6 +66,33 @@ void CameraPatch() {
         Log("patch_skipped reason=not_enabled\n");
         return;
     }
+    wchar_t manualFlag[8]{};
+    bool manual = GetEnvironmentVariableW(L"AIONCL_CAMERA_MANUAL", manualFlag, 8) == 1 && manualFlag[0] == L'1';
+    wchar_t applyPath[MAX_PATH]{};
+    wchar_t restorePath[MAX_PATH]{};
+    if (manual) {
+        DWORD length = GetModuleFileNameW(self, applyPath, MAX_PATH);
+        if (!length || length >= MAX_PATH) { Log("patch_skipped reason=signal_path\n"); return; }
+        wchar_t* slash = wcsrchr(applyPath, L'\\');
+        if (!slash || static_cast<size_t>(slash - applyPath) + 48 >= MAX_PATH) return;
+        swprintf(slash + 1, 48, L"aioncl-camera-%lu.apply", GetCurrentProcessId());
+        wcscpy(restorePath, applyPath);
+        wchar_t* suffix = wcsrchr(restorePath, L'.');
+        wcscpy(suffix, L".restore");
+        Log("manual_ready awaiting_apply=1 timeout_seconds=1800\n");
+        FlushFileBuffers(logFile);
+        ULONGLONG until = GetTickCount64() + 1800000;
+        while (GetFileAttributesW(applyPath) == INVALID_FILE_ATTRIBUTES && GetTickCount64() < until) Sleep(500);
+        if (GetFileAttributesW(applyPath) == INVALID_FILE_ATTRIBUTES) {
+            Log("patch_skipped reason=manual_timeout\n"); return;
+        }
+        DeleteFileW(applyPath);
+        // Login may replace or change CVars: discover again at the explicit in-game signal.
+        hitCount = 0;
+        errors = 0;
+        deadline = GetTickCount64() + 8000;
+        Scan(false);
+    }
     if (!stringScanComplete || errors) { Log("patch_skipped reason=incomplete_scan\n"); return; }
     uintptr_t objects[2]{};
     camera::Values originals[2]{};
@@ -97,8 +124,14 @@ void CameraPatch() {
     }
     FlushFileBuffers(logFile);
     if (applied) {
-        for (unsigned second = 0; second < 10; ++second) {
+        if (manual) { Log("manual_applied fov=80 distance=30 timeout_seconds=1800\n"); FlushFileBuffers(logFile); }
+        for (unsigned second = 0; second < (manual ? 1800u : 10u); ++second) {
             Sleep(1000);
+            if (manual && GetFileAttributesW(restorePath) != INVALID_FILE_ATTRIBUTES) {
+                DeleteFileW(restorePath);
+                Log("manual_restore_requested=1\n");
+                break;
+            }
             for (unsigned n = 0; n < 2; ++n) {
                 camera::Values current{};
                 if (!PatchObject(objects[n], n, current) || current.floating != camera::Desired(n).floating) {
