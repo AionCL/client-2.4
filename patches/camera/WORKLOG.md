@@ -231,3 +231,35 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
 - DONE: updated code compiles x86/x64; value tests pass; updated Windows scripts
   parse correctly. Next gate: automated signal/apply/restore run of manual mode
   before opening the actual user recipe session.
+
+## Manual protocol validated - user recipe pending
+
+- DONE: source committed/pushed as 05191b2 before manual-mode runtime test.
+- DONE: manual-smoke64-1, PID 26896. Waited without changing camera until .apply.
+  Fresh scan validated both CVars, applied 80/30, then .restore rolled back to
+  73/12. patch_test applied=1 restored=1, state Completed=true. Original DLL and
+  system.cfg hashes verified after exit. Temporary task automatically removed.
+  Log retrieved to VM evidence directory. A query for the deleted task returned
+  absent (exit 1); this is expected cleanup, not a failed camera test.
+- Current manual-capable build SHA256:
+  x86 79bb7fc591e3654bd01bfbcff706f63783f1117a9fd9f6048fafdb60e4170439;
+  x64 cefb1948acb7a5740e3057fd1db0323024cb60a4b896b64305a5903185e925c2.
+  Both compile, the manual protocol was exercised on x64. Windows x86 scratch
+  still has the earlier auto-test build; use VM artifact if x86 manual is needed.
+- Plain read-only build still imports ReadProcessMemory, not WriteProcessMemory.
+- ACTIVE at checkpoint: actual user x64 recipe in
+  `D:/codex-work/camera-diagnostic-20260920/user-recette64-1`.
+  Read state.json for exact PID and task.json for task identity. The worker waits
+  30 minutes for the user to reach a character in-game. Do NOT send .apply before
+  the user confirms in-game. The user does not need to copy or install files.
+- After confirmation: create empty `D:/games/aioncl-recette/bin64/aioncl-camera-PID.apply`,
+  then verify `manual_applied fov=80 distance=30` before asking for camera checks.
+  Ask for maximum zoom-out, view angle, rotation/collision, map-change stability.
+  At end create `.restore` counterpart or let normal game exit trigger file
+  restoration. Confirm state Completed=true and hashes. No launcher integration
+  or public update payload published: visual/in-game stability remains pending.
+- Verified user recipe process PID 12112 in interactive session 1, started
+  2026-09-21 06:14:52 UTC (08:14:52 Paris). Task:
+  AionCL-Camera-f58af7acfca9456385765bbe8f5de0ac. No .apply signal sent.
+  Before resuming, check process and state: this record is historical once the
+  30-minute wait expires or the user closes the client. Never reuse a stale PID.
