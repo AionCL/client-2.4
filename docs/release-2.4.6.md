@@ -3,8 +3,9 @@
 The server with ID 1 is displayed as `AionCL 2.4` in FRA, ENG, DEU and RUS.
 The published FRA/ENG/DEU resources still called it `QA1 Server 1`.
 The previous attempted rename was not located in the available launcher journal.
-In-game confirmation remains required; archive validation does not prove the
-Windows UI result.
+On 2026-09-21, Aymen confirmed that the reported server selection display
+issue is resolved after delivery of 2.4.6. Separate validation of every language
+and Verify/Repair was not explicitly reported.
 
 ## Distribution invariant
 
