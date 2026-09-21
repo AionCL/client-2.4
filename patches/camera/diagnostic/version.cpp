@@ -1,5 +1,7 @@
 #define WIN32_LEAN_AND_MEAN
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 #include <windows.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -221,6 +223,7 @@ void Scan(bool references) {
 #include "camera-patch.hpp"
 #endif
 
+#ifndef AIONCL_CAMERA_EXTERNAL
 DWORD WINAPI Worker(void*) {
     // The client retains its startup import. Pin before scanning so later unloads cannot race us.
     HMODULE pinned;
@@ -267,8 +270,10 @@ DWORD WINAPI Worker(void*) {
     CloseHandle(logFile);
     return 0;
 }
+#endif
 }
 
+#ifndef AIONCL_CAMERA_EXTERNAL
 BOOL WINAPI DllMain(HINSTANCE module, DWORD reason, LPVOID) {
     if (reason == DLL_PROCESS_ATTACH) {
         self = module;
@@ -279,3 +284,4 @@ BOOL WINAPI DllMain(HINSTANCE module, DWORD reason, LPVOID) {
     }
     return TRUE;
 }
+#endif

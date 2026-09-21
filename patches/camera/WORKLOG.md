@@ -394,3 +394,15 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   sessions), separately validate x86 in-game before supporting it. Design launcher
   integration only after stability gates; no permanent DLL replacement or public
   update deployed. Current Windows client is restored, not persistently patched.
+
+## Integration preparation - external helper
+
+- User requested launcher camera controls with distance maximum 100 and an
+  additional post-base client package. Worktrees inspected before edits.
+- Added experimental x64 external helper reusing bounded scanner and exact CVar
+  guards through VirtualQueryEx/ReadProcessMemory. It checks target image path,
+  architecture, duplicate helper mutex and getter signatures. No DLL replacement.
+- Helper compiles PE32+ on canonical VM; native value tests pass. Initial build
+  failed on NOMINMAX redefinition, corrected with guard and rebuilt successfully.
+- New transport still requires Windows runtime validation before release. Launcher
+  settings integration is being prepared; no manifest/release published yet.
