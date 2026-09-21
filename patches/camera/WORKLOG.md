@@ -323,3 +323,10 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   hashes verified. User needs a fresh session, not the terminated PID.
 - Extend only explicit in-game rescan deadline to 30 seconds; retain bounded
   blocks, completeness/identity guards, startup deadlines and restoration.
+- DONE: x86/x64 builds warning-free, PE32/PE32+ verified; native ASan/UBSan
+  value tests pass. Correction committed/pushed as 1d096f5 before deployment.
+- ACTIVE: updated x64 DLL transferred automatically; user-recette64-3 launched,
+  PID 21876, StartUtc 2026-09-21T10:47:00.4376714Z from Windows state.
+  Task AionCL-Camera-4f7b182863b84e0b831492e32e5f45b9. No apply signal sent;
+  wait for user to confirm character again. State/result in the corresponding
+  D:/codex-work/camera-diagnostic-20260920/user-recette64-3 directory.
