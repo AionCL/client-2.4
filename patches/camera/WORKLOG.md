@@ -312,3 +312,14 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   do not describe this active session as already restored. Next: confirm live PID
   and manual_ready, then after user confirmation signal apply and verify
   manual_applied before requesting visual checks. Restore and verify at end.
+
+## First in-game activation refused safely
+
+- User confirmed character in-game at maximum zoom and provided baseline image.
+  Verified PID 12736 and manual_ready, then sent its .apply signal.
+- FAILED activation: in-game rescan read 2171977728 bytes with errors=0 but
+  timeout=1 at eight seconds. patch_skipped reason=incomplete_scan; no writes.
+- DONE: harness ended recipe; Completed=true, original x64 DLL and system.cfg
+  hashes verified. User needs a fresh session, not the terminated PID.
+- Extend only explicit in-game rescan deadline to 30 seconds; retain bounded
+  blocks, completeness/identity guards, startup deadlines and restoration.

@@ -96,7 +96,9 @@ memory and undefined-behavior checks remain enabled.
 test, saving task identity to RunDirectory/task.json. The worker waits up to 30
 minutes for `bin64/aioncl-camera-PID.apply` (or bin32). Create this empty signal
 only once the user is in game. The scanner discovers and validates the CVars again
-before applying 80/30. It then holds for up to 30 minutes, with continuous readback.
+before applying 80/30. This in-game rescan allows 30 seconds for the larger loaded
+world; startup scans keep their 8-second deadlines. Incomplete scans still refuse
+all writes. It then holds for up to 30 minutes, with continuous readback.
 Creating `aioncl-camera-PID.restore` requests immediate rollback and ends the test.
 Signals are consumed automatically. Normal game exit also lets the controller
 restore the original DLL and system.cfg; the temporary scheduled task removes

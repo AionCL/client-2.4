@@ -90,7 +90,7 @@ void CameraPatch() {
         // Login may replace or change CVars: discover again at the explicit in-game signal.
         hitCount = 0;
         errors = 0;
-        deadline = GetTickCount64() + 8000;
+        deadline = GetTickCount64() + 30000;
         Scan(false);
     }
     if (!stringScanComplete || errors) { Log("patch_skipped reason=incomplete_scan\n"); return; }
