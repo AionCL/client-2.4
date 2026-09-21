@@ -2,6 +2,7 @@ param(
     [ValidateSet('bin32','bin64')][string]$Architecture = 'bin32',
     [string]$Diagnostic,
     [switch]$Baseline,
+    [switch]$CameraPatch,
     [Parameter(Mandatory=$true)][string]$RunDirectory
 )
 $ErrorActionPreference = 'Stop'
@@ -17,9 +18,10 @@ foreach ($path in @($script,$output,$state,$Diagnostic)) {
     if ($path -match "['`r`n]") { throw 'Unsupported character in test path' }
 }
 $mode = if ($Baseline) { '-Baseline' } else { "-Diagnostic '$Diagnostic'" }
+if ($CameraPatch) { $mode += ' -CameraPatch' }
 $command = "try { & '$script' -Architecture $Architecture $mode -State '$state' *> '$output'; exit 0 } catch { `$_.Exception.Message | Out-File -Append '$output'; exit 1 }"
 $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($command))
-$action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand $encoded"
+$action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -EncodedCommand $encoded"
 $principal = New-ScheduledTaskPrincipal -UserId $user -LogonType Interactive -RunLevel Highest
 $settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit (New-TimeSpan -Minutes 4) -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
 try {

@@ -184,3 +184,31 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   No memory patch created or applied yet.
 - User will perform distance/FOV in-game testing only after an explicit ready
   notice. Current tests are automated diagnostics and close the client.
+
+## Validated storage and opt-in patch prototype
+
+- DONE: layout32 PID 10964, task result 0, original restored. Exact objects have
+  category 0, type 3, internal int/float/text pointers, matching numeric values.
+  CrySystem vtable RVA 1a2974; getter prefixes (slots 1,2,3):
+  8b81980000008b00c3; 8b819c000000d900c3; 8b8194000000c3.
+- DONE: layout64 PID 23824, task result 0, original restored. Same storage
+  validation; vtable RVA 21b128; getter prefixes:
+  488b81a80000008b00c3; 488b81b0000000f30f1000c3; 488b81a0000000c3.
+  Numeric storage is this+184/188/192, versus this+160/164/168 on x86.
+- DONE: both logs retrieved to VM evidence directory. These checks validate the
+  target structure for the exact binaries, not the visible camera behavior.
+- Added a separately compiled AIONCL_CAMERA_PATCH prototype, explicit child-only
+  AIONCL_CAMERA_TEST=1 required. Rejects ambiguous/incomplete scans, mismatched
+  CrySystem vtable/getters, non-internal pointers, inconsistent or changing values.
+  Writes only 40 bytes per CVar (numeric representations), requests 80/30, observes
+  ten seconds, then rolls back. No code patches or page-protection changes.
+- DONE: native value tests pass ASan/UBSan with leak checks disabled because
+  LeakSanitizer fails under this sandbox's ptrace. Initial LSan run failed for
+  that environment reason. Both prototype DLLs compile warning-free (PE32/PE32+).
+- Prototype hashes: x86 cdc8be35439a082995e8c5bacb4a99a4e3e5afc884c109385216fdcf3fc5b591;
+  x64 ca08ab4ea230a70c956b1a908df0d35b88e6508a61e4f55b29cef07d460c95af.
+- Added -CameraPatch harness mode, system.cfg backup/restore, and required
+  patch_test applied=1 restored=1 result. Both PowerShell scripts parse correctly.
+- DONE: enabled x86 patch fixture exits 0, fixture unchanged, guard intact,
+  patch_skipped reason=unvalidated_layout, complete=1. No prototype has yet been
+  applied inside Aion at this checkpoint.

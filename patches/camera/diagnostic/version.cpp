@@ -6,6 +6,9 @@
 #include <string.h>
 #include <stdarg.h>
 #include <math.h>
+#ifdef AIONCL_CAMERA_PATCH
+#include "camera-values.hpp"
+#endif
 
 namespace {
 constexpr size_t Block = 64 * 1024;
@@ -20,6 +23,7 @@ void* stackAllocation;
 HANDLE logFile = INVALID_HANDLE_VALUE;
 unsigned errors;
 ULONGLONG deadline;
+bool stringScanComplete;
 
 void Log(const char* format, ...) {
     char line[1024];
@@ -210,7 +214,12 @@ void Scan(bool references) {
     Log("scan_end references=%u bytes=%llu hits=%zu refs=%u errors=%u timeout=%u\n",
         references ? 1u : 0u, static_cast<unsigned long long>(total), hitCount, refs, errors,
         GetTickCount64() >= deadline ? 1u : 0u);
+    if (!references) stringScanComplete = address >= maximum && hitCount < MaxHits && GetTickCount64() < deadline;
 }
+
+#ifdef AIONCL_CAMERA_PATCH
+#include "camera-patch.hpp"
+#endif
 
 DWORD WINAPI Worker(void*) {
     // The client retains its startup import. Pin before scanning so later unloads cannot race us.
@@ -231,7 +240,11 @@ DWORD WINAPI Worker(void*) {
     MEMORY_BASIC_INFORMATION stack{};
     VirtualQuery(&stack, &stack, sizeof(stack));
     stackAllocation = stack.AllocationBase;
+#ifdef AIONCL_CAMERA_PATCH
+    Log("camera_patch_test=1 bits=%zu pid=%lu block=%zu read_only=0\n", sizeof(void*) * 8, GetCurrentProcessId(), Block);
+#else
     Log("diagnostic=3 bits=%zu pid=%lu block=%zu read_only=1\n", sizeof(void*) * 8, GetCurrentProcessId(), Block);
+#endif
     const DWORD waits[] = {2000, 6000, 12000, 40000};
     for (unsigned pass = 0; pass < 4; ++pass) {
         Sleep(waits[pass]);
@@ -240,10 +253,15 @@ DWORD WINAPI Worker(void*) {
         errors = 0;
         deadline = GetTickCount64() + 8000;
         Scan(false);
+#ifndef AIONCL_CAMERA_PATCH
         deadline = GetTickCount64() + 8000;
         if (hitCount) Scan(true);
+#endif
         FlushFileBuffers(logFile);
     }
+#ifdef AIONCL_CAMERA_PATCH
+    CameraPatch();
+#endif
     Log("complete=1\n");
     FlushFileBuffers(logFile);
     CloseHandle(logFile);

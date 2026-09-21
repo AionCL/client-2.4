@@ -60,3 +60,32 @@ resolves the configured login host to IPv4. A surviving process
 under SSH proves neither an interactive login nor an in-game camera effect.
 
 API lifecycle reference: https://learn.microsoft.com/en-us/windows/win32/dlls/dllmain
+
+## Separate patch prototype
+
+Compile with `-DAIONCL_CAMERA_PATCH` to produce a different, opt-in test DLL. The
+plain diagnostic build still has no game-memory writes. Patch tests additionally
+require `-CameraPatch` in the PowerShell harness, which sets a child-only opt-in
+environment variable and snapshots/restores system.cfg as well as the original DLL.
+
+This prototype targets only the verified CrySystem CVar layout and getter byte
+signatures, exact names, internal self-pointers, type 3, and a unique object per
+name. It refuses incomplete scans, inconsistent numeric representations, changing
+values, and unsupported layouts. It writes only the 40-byte int/float/numeric-text
+area of each CVar: FOV 80, distance 30. It verifies writes and ten seconds of
+readback, then restores the original bytes after rechecking identity. It never
+changes page protection or engine code, and never calls an unverified function.
+
+This proves storage updates only; it is NOT proof of an in-game camera effect or
+production stability. No launcher integration or update-feed publication yet.
+
+Native value-validation tests:
+
+```sh
+g++ -std=c++17 -Wall -Wextra -Werror -fsanitize=address,undefined \
+  test-camera-values.cpp -o /tmp/camera-values-test
+ASAN_OPTIONS=detect_leaks=0 /tmp/camera-values-test
+```
+
+Leak detection is disabled under the VM sandbox's ptrace environment; ASan/UBSan
+memory and undefined-behavior checks remain enabled.

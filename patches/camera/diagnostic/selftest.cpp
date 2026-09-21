@@ -6,7 +6,11 @@
 
 // In-process fixture only: no client files or game memory are touched.
 int main(int argc, char** argv) {
-    if (argc != 2) return 1;
+    if (argc != 2 && argc != 3) return 1;
+    if (argc == 3) {
+        if (strcmp(argv[2], "--enable-patch")) return 1;
+        SetEnvironmentVariableW(L"AIONCL_CAMERA_TEST", L"1");
+    }
     auto* region = static_cast<unsigned char*>(VirtualAlloc(nullptr, 3 * 65536, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
     if (!region) return 2;
     memcpy(region + 65532, "g_minFov", 9); // Spans a scanner block boundary.
