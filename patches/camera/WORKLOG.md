@@ -161,3 +161,26 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   These are static clues, NOT runtime CVar structure validation.
 - Next: commit/push revision 2, interactive x86 run with late pass, restore, then
   separate x64 run. Runtime patch is still gated on CVar identity validation.
+
+## 2026-09-21 - Resumed runtime validation
+
+- DONE: x86 revision 2 PID 1208 completed all passes, alive, restored, task result
+  0. At late pass: g_camMax object ebb5a480, name +5, vtable 70ba2974, int +160
+  and float +164 both 12. g_minFov object ebc13640, same layout/vtable, value 73.
+  Three transient partial reads handled; late pointer-reference scan timed out.
+- PARTIAL: x64 PID 2952 produced a complete four-pass log with two candidates:
+  g_minFov object 41e92600, g_camMax 41e9f600; name +9, vtable 18021b128,
+  int +184/float +188 = 60 and 32 respectively. Reference scans timed out.
+  Controller task returned 0xc000013a (interrupted), not a demonstrated game
+  crash. State Completed=true; on resume both active original DLL hashes match
+  their backups, no Aion process and no temporary scheduled task remain.
+- DONE: logs 1208 and 2952 retrieved to /tmp/aioncl-camera-evidence-20260920.
+- Static x64 vtable at CrySystem RVA 21b128 identifies CXConsoleVariable:
+  slot 1 -> RVA 199d80 reads integer via [this+168]; slot 2 -> RVA 199d90 reads
+  float via [this+176]; slot 3 -> RVA 199db0 returns string pointer [this+160].
+  Do NOT assume inline values are authoritative until these pointers are checked.
+- Revision 3 adds read-only evidence of numeric storage pointers, sanitized
+  numeric text, and first 16 executable bytes of three known getter slots.
+  No memory patch created or applied yet.
+- User will perform distance/FOV in-game testing only after an explicit ready
+  notice. Current tests are automated diagnostics and close the client.

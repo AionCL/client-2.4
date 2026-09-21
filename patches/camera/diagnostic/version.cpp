@@ -71,6 +71,46 @@ bool Vtable(uintptr_t address) {
            Executable(methods[1]) && Executable(methods[2]);
 }
 
+void LayoutEvidence(const Hit& hit, uintptr_t object, uintptr_t vt, size_t back) {
+    constexpr size_t nameOffset = sizeof(uintptr_t) + 1;
+    constexpr size_t intOffset = sizeof(uintptr_t) == 8 ? 184 : 160;
+    constexpr size_t stringPointerOffset = sizeof(uintptr_t) == 8 ? 160 : 148;
+    if (back != nameOffset || object % 16) return;
+    unsigned char category;
+    uintptr_t storage[3]{};
+    int32_t integer;
+    float floating;
+    char numeric[32]{};
+    if (!Read(object + sizeof(uintptr_t), &category, 1) || category > 1 ||
+        !Read(object + stringPointerOffset, storage, sizeof(storage)) ||
+        !Read(storage[1], &integer, 4) || !Read(storage[2], &floating, 4) ||
+        !Read(storage[0], numeric, sizeof(numeric))) return;
+    // Log only a bounded numeric string, never an arbitrary pointed-to string.
+    size_t length = 0;
+    while (length < sizeof(numeric) && numeric[length]) {
+        char c = numeric[length++];
+        if ((c < '0' || c > '9') && c != '.' && c != '-' && c != '+') return;
+    }
+    if (!length || length == sizeof(numeric) || !isfinite(floating)) return;
+    bool internal = storage[0] == object + intOffset + 8 &&
+        storage[1] == object + intOffset && storage[2] == object + intOffset + 4;
+    MEMORY_BASIC_INFORMATION module{};
+    if (!VirtualQuery(reinterpret_cast<void*>(vt), &module, sizeof(module))) return;
+    Log("layout name=%s object=%p category=%u internal_storage=%u int=%ld float=%.9g text=%s vtable_rva=%zx module=%p\n",
+        Names[hit.name], reinterpret_cast<void*>(object), category, internal ? 1u : 0u,
+        static_cast<long>(integer), floating, numeric,
+        vt - reinterpret_cast<uintptr_t>(module.AllocationBase), module.AllocationBase);
+    for (unsigned slot = 1; slot <= 3; ++slot) {
+        uintptr_t method;
+        unsigned char code[16]{};
+        if (!Read(vt + slot * sizeof(uintptr_t), &method, sizeof(method)) || !Executable(method) ||
+            !Read(method, code, sizeof(code))) continue;
+        char hex[33]{};
+        for (unsigned i = 0; i < sizeof(code); ++i) snprintf(hex + i * 2, 3, "%02x", code[i]);
+        Log("getter name=%s slot=%u address=%p prefix=%s\n", Names[hit.name], slot, reinterpret_cast<void*>(method), hex);
+    }
+}
+
 void Inspect(const Hit& hit) {
     // Infer candidates from a nearby vtable, without assuming Shugo's layout is valid.
     for (size_t back = sizeof(uintptr_t); back <= 64; ++back) {
@@ -80,6 +120,7 @@ void Inspect(const Hit& hit) {
         if (!Read(object, &vt, sizeof(vt)) || !Vtable(vt)) continue;
         Log("candidate name=%s object=%p name_offset=%zu vtable=%p\n", Names[hit.name],
             reinterpret_cast<void*>(object), back, reinterpret_cast<void*>(vt));
+        LayoutEvidence(hit, object, vt, back);
         // Only report plausible numeric fields after the 128-byte inline name.
         for (size_t offset = (back + 128 + 3) & ~size_t(3); offset < 224; offset += 4) {
             float value;
@@ -190,7 +231,7 @@ DWORD WINAPI Worker(void*) {
     MEMORY_BASIC_INFORMATION stack{};
     VirtualQuery(&stack, &stack, sizeof(stack));
     stackAllocation = stack.AllocationBase;
-    Log("diagnostic=2 bits=%zu pid=%lu block=%zu read_only=1\n", sizeof(void*) * 8, GetCurrentProcessId(), Block);
+    Log("diagnostic=3 bits=%zu pid=%lu block=%zu read_only=1\n", sizeof(void*) * 8, GetCurrentProcessId(), Block);
     const DWORD waits[] = {2000, 6000, 12000, 40000};
     for (unsigned pass = 0; pass < 4; ++pass) {
         Sleep(waits[pass]);
