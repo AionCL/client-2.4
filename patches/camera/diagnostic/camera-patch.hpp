@@ -124,7 +124,7 @@ void CameraPatch() {
     }
     FlushFileBuffers(logFile);
     if (applied) {
-        if (manual) { Log("manual_applied fov=80 distance=30 timeout_seconds=1800\n"); FlushFileBuffers(logFile); }
+        if (manual) { Log("manual_applied fov=80 distance=100 timeout_seconds=1800\n"); FlushFileBuffers(logFile); }
         for (unsigned second = 0; second < (manual ? 1800u : 10u); ++second) {
             Sleep(1000);
             if (manual && GetFileAttributesW(restorePath) != INVALID_FILE_ATTRIBUTES) {

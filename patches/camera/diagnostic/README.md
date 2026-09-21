@@ -72,7 +72,7 @@ This prototype targets only the verified CrySystem CVar layout and getter byte
 signatures, exact names, internal self-pointers, type 3, and a unique object per
 name. It refuses incomplete scans, inconsistent numeric representations, changing
 values, and unsupported layouts. It writes only the 40-byte int/float/numeric-text
-area of each CVar: FOV 80, distance 30. It verifies writes and ten seconds of
+area of each CVar: FOV 80, distance 100 (explicit experimental range test). It verifies writes and ten seconds of
 readback, then restores the original bytes after rechecking identity. It never
 changes page protection or engine code, and never calls an unverified function.
 
@@ -96,7 +96,7 @@ memory and undefined-behavior checks remain enabled.
 test, saving task identity to RunDirectory/task.json. The worker waits up to 30
 minutes for `bin64/aioncl-camera-PID.apply` (or bin32). Create this empty signal
 only once the user is in game. The scanner discovers and validates the CVars again
-before applying 80/30. This in-game rescan allows 30 seconds for the larger loaded
+before applying 80/100. This in-game rescan allows 30 seconds for the larger loaded
 world; startup scans keep their 8-second deadlines. Incomplete scans still refuse
 all writes. It then holds for up to 30 minutes, with continuous readback.
 Creating `aioncl-camera-PID.restore` requests immediate rollback and ends the test.

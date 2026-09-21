@@ -345,3 +345,15 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   signal sent yet; await visual feedback. Restore originals 60/32 at test end,
   then verify disk restoration via state/result and hashes. Do not claim visual
   success, extended range or launcher readiness from memory readback alone.
+
+## Requested distance-100 experiment
+
+- User reports visible change and provides second screenshot, then explicitly
+  requests exaggerated distance 100. Wider framing is consistent with FOV effect;
+  visual extended-distance behavior is not yet validated.
+- DONE: sent restore to PID 21876 before rebuilding. Log confirms original
+  FOV 60 and distance 32 restored, patch_test applied=1 restored=1, Completed=true.
+- Change experimental target to FOV 80 / distance 100, extend distance validation
+  upper bound to exactly 100 and add boundary tests rejecting 101. Existing
+  identity guards and rollback retained. Requires fresh session and user-ready
+  confirmation; do not modify memory behind the active prototype's watchdog.

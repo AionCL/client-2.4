@@ -24,7 +24,7 @@ inline bool Valid(const Values& value, unsigned name) {
     char* end = nullptr;
     float parsed = strtof(value.text, &end);
     float low = name == 0 ? 30.0f : 1.0f;
-    float high = name == 0 ? 170.0f : 50.0f;
+    float high = name == 0 ? 170.0f : 100.0f;
     return end == value.text + length && isfinite(value.floating) && isfinite(parsed) &&
         value.floating >= low && value.floating <= high &&
         value.integer == static_cast<int32_t>(value.floating) && fabsf(parsed - value.floating) < 0.001f;
@@ -32,7 +32,7 @@ inline bool Valid(const Values& value, unsigned name) {
 
 inline Values Desired(unsigned name) {
     Values result{};
-    result.integer = name == 0 ? 80 : 30;
+    result.integer = name == 0 ? 80 : 100;
     result.floating = static_cast<float>(result.integer);
     snprintf(result.text, sizeof(result.text), "%ld", static_cast<long>(result.integer));
     return result;

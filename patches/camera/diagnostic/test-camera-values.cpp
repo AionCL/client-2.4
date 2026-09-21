@@ -29,7 +29,13 @@ int main() {
     assert(camera::Valid(distance, 1));
     camera::Values fov{73, 73.0f, "73"};
     assert(camera::Valid(fov, 0));
-    assert(!camera::Valid(fov, 1));
+    assert(camera::Valid(fov, 1));
+    camera::Values maximum{100, 100.0f, "100"};
+    assert(camera::Valid(maximum, 1));
+    camera::Values excessive{101, 101.0f, "101"};
+    assert(!camera::Valid(excessive, 1));
+    assert(camera::Desired(0).integer == 80);
+    assert(camera::Desired(1).integer == 100);
     assert(!camera::Valid(distance, 0));
     assert(!camera::Valid(distance, 2));
     puts("camera value validation: PASS");
