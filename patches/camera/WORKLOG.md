@@ -357,3 +357,11 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   upper bound to exactly 100 and add boundary tests rejecting 101. Existing
   identity guards and rollback retained. Requires fresh session and user-ready
   confirmation; do not modify memory behind the active prototype's watchdog.
+- DONE: native ASan/UBSan tests pass including 100/101 boundary; warning-free
+  x86/x64 builds verified PE32/PE32+. Committed/pushed 6ff5a6a before transfer.
+- ACTIVE: updated x64 recipe user-recette64-4, PID 8796, Windows StartUtc
+  2026-09-21T10:51:55.9806286Z; task AionCL-Camera-7aff1925f57942bb9e3f8d3a62734d83.
+  State/result at D:/codex-work/camera-diagnostic-20260920/user-recette64-4/.
+  No apply signal yet. Await fresh in-game confirmation then verify manual_ready
+  and signal aioncl-camera-8796.apply only if this PID is still the live recipe.
+  Target is now 80/100; retain automatic rollback and verify restoration at end.
