@@ -292,3 +292,23 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   -o ConnectTimeout=8 -p 22 codex@192.168.1.7 hostname
 - No Windows files or camera values changed. Next: inspect the historical recipe
   state and verify restoration before starting any fresh camera test.
+
+## Fresh user camera recipe via direct SSH
+
+- DONE: clean Git inspected. Previous user-recette64-1 state Completed=true,
+  result reports restoration. Actual x64 DLL, x86 DLL and system.cfg hashes match
+  recorded originals. Old scheduled task absent. Prototype x64 hash matches
+  cefb1948acb7a5740e3057fd1db0323024cb60a4b896b64305a5903185e925c2.
+- Initial script invocation failed under PowerShell execution policy. Retried
+  successfully with process-scoped -ExecutionPolicy Bypass; no policy persisted.
+- ACTIVE: user-recette64-2, PID 12736, interactive session 1, process verified
+  by PID as aionclassic.bin. Windows reports StartUtc 2026-09-21T10:42:36.6859468Z;
+  use live state/PID checks, not previous journal times, to establish liveness.
+  Task AionCL-Camera-20c1dab5628144578440a5044a7b3503. State/result under
+  D:/codex-work/camera-diagnostic-20260920/user-recette64-2/.
+  Log D:/games/aioncl-recette/bin64/aioncl-camera-12736.log is being produced.
+- No apply signal sent. User instructed to enter character and explicitly report
+  in-game before activation. Temporary x64 DLL is installed with watchdog armed;
+  do not describe this active session as already restored. Next: confirm live PID
+  and manual_ready, then after user confirmation signal apply and verify
+  manual_applied before requesting visual checks. Restore and verify at end.
