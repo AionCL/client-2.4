@@ -416,3 +416,15 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
 - Added small append-only package builder and roundtrip/boundary tests. Local
   v2.4.5 package has one tools/AionCL.Camera.exe entry and preserves all 16 base/
   existing patch packages. Python tests pass; release not published at checkpoint.
+- DONE: published v2.4.5 pre-release at full commit cbeacab1186b16aa546c94fdb02262089ada5c52
+  (initial abbreviated target rejected by GitHub; full SHA succeeded). New archive
+  017 SHA256 9f21798c244c0274c65b635966134a5048682abae2b2efc33c545c0ba5538ed9.
+- DONE: launcher 2.5.41 CI 35604087975 passed; UI dialog screenshot and bounds
+  validated in interactive desktop. Actual launcher downloader/extractor validated
+  public manifest, downloaded only archive 017, checked hashes and helper argument
+  rejection in scratch directory, then removed test output: CAMERA_PACKAGE_PASS.
+- Published launcher-v2.5.41 at 02cc3415da553a85a43be23cb330cc9d465bf281.
+  User workflow: launcher update -> client update -> Settings Camera/FOV enable
+  80/100 -> start game. Still needs in-game confirmation of external transport,
+  zone changes and relaunch/disable checks. Original client files restored after
+  experiments; no client DLL permanently replaced. Detailed release docs added.
