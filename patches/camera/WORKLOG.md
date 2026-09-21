@@ -330,3 +330,18 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   Task AionCL-Camera-4f7b182863b84e0b831492e32e5f45b9. No apply signal sent;
   wait for user to confirm character again. State/result in the corresponding
   D:/codex-work/camera-diagnostic-20260920/user-recette64-3 directory.
+
+## In-game application confirmed - visual feedback pending
+
+- User confirmed ready again. Verified live PID 21876, Completed=false and
+  manual_ready, then sent its .apply signal.
+- DONE: fresh scan completed: bytes=2056499200, hits=11, errors=0, timeout=0.
+  Log confirms patch_applied g_minFov before=60 after=80 and g_camMax
+  before=32 after=30; manual_applied fov=80 distance=30 timeout_seconds=1800.
+- IMPORTANT: actual in-game defaults differ from login tests (73/12). This test
+  reduces distance 32 to 30; it does NOT demonstrate extended maximum zoom.
+  User informed and asked for same-angle screenshot, then zoom-limit comparison.
+- ACTIVE: manual test holding values, restoration watchdog armed. No restore
+  signal sent yet; await visual feedback. Restore originals 60/32 at test end,
+  then verify disk restoration via state/result and hashes. Do not claim visual
+  success, extended range or launcher readiness from memory readback alone.
