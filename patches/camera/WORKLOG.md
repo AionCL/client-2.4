@@ -279,3 +279,16 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   Then open a fresh manual recipe if needed and wait for explicit confirmation
   that the character is in-game before signaling apply. Visual FOV/distance
   validation and launcher integration remain pending; no build publication needed.
+
+## Direct Windows SSH access recovered
+
+- DONE: user supplied Windows Wi-Fi address 192.168.1.7. Direct port 22 responds.
+  Initial strict host check rejected this previously unknown address; no key was
+  accepted or host verification disabled.
+- DONE: retried with HostKeyAlias=[127.0.0.1]:2222 to check the existing trusted
+  Windows tunnel key. Authentication succeeded and hostname returned Zbook-Aymen.
+  Recovery command: ssh -F /var/lib/codex/.ssh/config -o BatchMode=yes
+  -o StrictHostKeyChecking=yes -o 'HostKeyAlias=[127.0.0.1]:2222'
+  -o ConnectTimeout=8 -p 22 codex@192.168.1.7 hostname
+- No Windows files or camera values changed. Next: inspect the historical recipe
+  state and verify restoration before starting any fresh camera test.
