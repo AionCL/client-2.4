@@ -263,3 +263,19 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   AionCL-Camera-f58af7acfca9456385765bbe8f5de0ac. No .apply signal sent.
   Before resuming, check process and state: this record is historical once the
   30-minute wait expires or the user closes the client. Never reuse a stale PID.
+
+## Resume 2026-09-21 12:12 UTC - Windows tunnel unavailable
+
+- DONE: inspected Git before changes; main clean and synchronized with origin.
+  Reviewed the previous recipe handoff and successful automated x86/x64 results.
+- BLOCKED: SSH to 127.0.0.1:2222 using the existing explicit SSH configuration
+  returns Connection refused. No Windows command ran, no apply signal was sent,
+  and no client file or camera value was changed during this resume.
+- The earlier PID 12112 recipe is historical and its configured wait has elapsed.
+  Automatic restoration was armed, but its actual completion cannot be verified
+  until Windows is reachable. Do not claim restoration or reuse that PID.
+- NEXT: restore tunnel availability, inspect user-recette64-1/state.json and
+  result.txt, verify original DLL/config hashes and scheduled-task cleanup.
+  Then open a fresh manual recipe if needed and wait for explicit confirmation
+  that the character is in-game before signaling apply. Visual FOV/distance
+  validation and launcher integration remain pending; no build publication needed.
