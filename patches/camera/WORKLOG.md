@@ -365,3 +365,17 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   No apply signal yet. Await fresh in-game confirmation then verify manual_ready
   and signal aioncl-camera-8796.apply only if this PID is still the live recipe.
   Target is now 80/100; retain automatic rollback and verify restoration at end.
+
+## Distance 100 applied in-game - user comparison pending
+
+- User confirmed ready. Verified PID 8796 in session 1, Completed=false and
+  manual_ready before sending its .apply signal.
+- DONE: fresh scan completed, bytes=2049470464 hits=11 errors=0 timeout=0.
+  Log confirms g_minFov 60 -> 80, g_camMax 32 -> 100, and
+  manual_applied fov=80 distance=100 timeout_seconds=1800.
+- ACTIVE: user-recette64-4 holds experimental values with watchdog armed.
+  User asked to zoom out to maximum, capture the result and check zoom-in.
+  Visible extended distance and stability remain pending user feedback.
+- NEXT: verify live PID/state before further action; at recipe end signal
+  aioncl-camera-8796.restore only if this is still the active session. Confirm
+  rollback to 60/32 and disk restoration. No production/launcher deployment.
