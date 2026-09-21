@@ -379,3 +379,18 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
 - NEXT: verify live PID/state before further action; at recipe end signal
   aioncl-camera-8796.restore only if this is still the active session. Confirm
   rollback to 60/32 and disk restoration. No production/launcher deployment.
+
+## User validates x64 camera effect; recipe restored
+
+- DONE: user explicitly reports perfect operation and supplies screenshot showing
+  substantially increased camera range. First visual x64 in-game validation of
+  FOV 80 / distance 100 obtained. This does not establish long-session stability,
+  map-transition behavior or x86 visual equivalence.
+- DONE: notified user of test closure, sent .restore to PID 8796. Log confirms
+  FOV 60 / distance 32 restored, patch_test applied=1 restored=1, complete=1;
+  state Completed=true. Actual original x64 DLL and system.cfg hashes verified.
+- Evidence retrieved to /tmp/aioncl-camera-evidence-20260920/ingame-distance100-8796.log.
+- NEXT: extend stability coverage (zone changes, camera collision, repeated
+  sessions), separately validate x86 in-game before supporting it. Design launcher
+  integration only after stability gates; no permanent DLL replacement or public
+  update deployed. Current Windows client is restored, not persistently patched.
