@@ -19,7 +19,7 @@
 | `packages[].mirrors` | Tableau d'URL HTTPS. Vide dans un build local sans `BaseUrl`. |
 | `packages[].files` | Inventaire exact du ZIP : objets `path`, `size`, `sha256`. |
 
-Les chemins `files[].path` sont relatifs à la racine d'installation, avec `/`, sans répertoire parent englobant. Aucun fichier ne figure dans plusieurs packages. Les répertoires vides, ACL, flux NTFS alternatifs et dates originales ne sont pas distribués. Les liens symboliques/jonctions sélectionnés sont refusés. Les noms incompatibles avec Windows et les collisions de casse sont refusés.
+Les chemins `files[].path` sont relatifs à la racine d'installation, avec `/`, sans répertoire parent englobant. Dans la base clean, aucun fichier ne figure dans plusieurs packages. Un package correctif ajouté à la fin peut remplacer un chemin déjà présent : le dernier package définit le fichier effectif. Les doublons au sein du même package restent interdits. Les anciens packages, hashes et URL doivent être conservés à l’identique. Les répertoires vides, ACL, flux NTFS alternatifs et dates originales ne sont pas distribués. Les liens symboliques/jonctions sélectionnés sont refusés. Les noms incompatibles avec Windows et les collisions de casse sont refusés.
 
 ## Procédure du futur launcher
 

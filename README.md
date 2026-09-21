@@ -6,6 +6,15 @@ Scripts PowerShell de préparation et de vérification des archives d'installati
 
 Windows PowerShell 5.1 avec .NET Framework 4.7.2 ou ultérieur, ou PowerShell 7 sous Windows. Aucun outil de compression externe n'est nécessaire.
 
+## Correctifs et améliorations
+
+Conserver les packages du client de base clean, sans les reconstruire pour un
+correctif ou une amélioration. Distribuer chaque changement dans un package
+supplémentaire appliqué après la base et les correctifs précédents. Le manifest
+complet conserve les noms, hashes et URL des packages existants ; le dernier
+package contenant un chemin définit sa version effective. Exemple :
+[renommage du serveur 2.4.6](docs/release-2.4.6.md).
+
 ## Génération
 
 Depuis la racine du dépôt, fournir le chemin de la source :

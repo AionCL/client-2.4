@@ -50,3 +50,8 @@ __pycache__/
 !/patches/camera/bin64/
 !/patches/camera/bin64/version.dll
 !/patches/camera/README.md
+
+# Reviewed standalone server-label correction
+!/tools/package-server-name.py
+!/tools/test-package-server-name.py
+!/docs/release-2.4.6.md
