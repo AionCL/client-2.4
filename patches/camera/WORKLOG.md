@@ -406,3 +406,13 @@ Real Aion startup and CVar identification remain NOT EXECUTED at this checkpoint
   failed on NOMINMAX redefinition, corrected with guard and rebuilt successfully.
 - New transport still requires Windows runtime validation before release. Launcher
   settings integration is being prepared; no manifest/release published yet.
+- DONE: external64-3 interactive task ran helper against original x64 DLL,
+  PID 15068. Log ready=1; FOV 60 -> 80 and distance 10 -> 100, then engine reset
+  73/12 was detected and reapplied to 80/100. Game exited on controlled test end,
+  helper complete=1. Completed=true, original DLL/config hashes verified. Temporary
+  helper removed and helper task unregistered. Earlier external64-1 SSH child
+  produced no scan evidence; external64-2 refused overlapping game. Neither is
+  counted as successful runtime validation. No credentials used or logged.
+- Added small append-only package builder and roundtrip/boundary tests. Local
+  v2.4.5 package has one tools/AionCL.Camera.exe entry and preserves all 16 base/
+  existing patch packages. Python tests pass; release not published at checkpoint.
