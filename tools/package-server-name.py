@@ -192,7 +192,8 @@ def patch_pak(data, tables):
     return packed
 
 
-def build(manifest_path, client, codec, output, version):
+def build(manifest_path, client, codec, output, version, *, patcher=patch_pak,
+          description='only server label changed'):
     original = json.loads(manifest_path.read_text(encoding='utf-8-sig'))
     if not re.fullmatch(r'2\.4\.[0-9]+', version) or tuple(map(int, version.split('.'))) <= tuple(map(int, original['clientVersion'].split('.'))):
         raise ValueError('Expected a newer 2.4.N version')
@@ -208,8 +209,8 @@ def build(manifest_path, client, codec, output, version):
         expected = effective[path.lower()]
         if len(source) != expected['size'] or digest(source) != expected['sha256']:
             raise ValueError('Source differs from published manifest: ' + path)
-        entries[path] = patch_pak(source, tables)
-        print(locale + ': PASS all PAK entries verified; only server label changed', flush=True)
+        entries[path] = patcher(source, tables)
+        print(locale + ': PASS all PAK entries verified; ' + description, flush=True)
     name = f'aioncl-client-{version}-{len(original["packages"]) + 1:03}.zip'
     archive = output / name
     with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=6) as z:

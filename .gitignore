@@ -55,3 +55,8 @@ __pycache__/
 !/tools/package-server-name.py
 !/tools/test-package-server-name.py
 !/docs/release-2.4.6.md
+
+# Reviewed native shop icon suppression
+!/tools/package-shop-icons.py
+!/tools/test-package-shop-icons.py
+!/docs/release-2.4.7.md
