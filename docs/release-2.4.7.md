@@ -48,3 +48,11 @@ Luna must remain absent. Check the other radar controls and a normal merchant.
 If using both HUD layouts, check both; then Verify/Repair and restart to confirm
 that the icon does not return. Visual acceptance requires the actual game and
 is not claimed by the structural packaging checks.
+
+## User acceptance confirmed — 2026-09-22
+
+Aymen confirmed: « Parfait c'est bien supprimé maintenant ». Removal of the
+remaining Aion shop icon is visually accepted after client 2.4.7. The earlier
+feedback already confirmed Luna/Quna removal and the inactive Aion shop.
+The reported issue is resolved. Separate checks of all languages/HUD layouts,
+merchants, shortcuts and Verify/Repair were not explicitly reported.
