@@ -60,3 +60,8 @@ __pycache__/
 !/tools/package-shop-icons.py
 !/tools/test-package-shop-icons.py
 !/docs/release-2.4.7.md
+
+# Reviewed mixed-faction merge warning suppression
+!/tools/package-mixed-faction.py
+!/tools/test-package-mixed-faction.py
+!/docs/release-2.4.8.md
