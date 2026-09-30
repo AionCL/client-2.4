@@ -70,3 +70,8 @@ __pycache__/
 !/tools/package-siel-energy.py
 !/tools/test-package-siel-energy.py
 !/docs/release-2.4.9.md
+
+# Reviewed Siel trade permissions and native prompt removal
+!/tools/package-siel-trading.py
+!/tools/test-package-siel-trading.py
+!/docs/release-2.4.10.md
