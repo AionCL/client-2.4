@@ -65,3 +65,8 @@ __pycache__/
 !/tools/package-mixed-faction.py
 !/tools/test-package-mixed-faction.py
 !/docs/release-2.4.8.md
+
+# Reviewed account Siel energy packs
+!/tools/package-siel-energy.py
+!/tools/test-package-siel-energy.py
+!/docs/release-2.4.9.md
